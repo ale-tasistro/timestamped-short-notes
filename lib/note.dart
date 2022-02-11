@@ -6,6 +6,10 @@ class Note {
 
   Note(this.desc);
 
+  void setDesc(String newDesc) {
+    desc = newDesc;
+  }
+
   String timestampHour() {
     return timestamp.hour.toString() + ":"
         + timestamp.minute.toString();
