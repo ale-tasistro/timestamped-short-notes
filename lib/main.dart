@@ -30,7 +30,7 @@ class NotesList extends StatefulWidget {
 
 class _NotesListState extends State<NotesList> {
 
-  final _notes = <Note>[Note("nota 1"), Note("nota 2"), Note("nota 3"), Note("nota 4")];
+  final _notes = <Note>[];
   final TextEditingController _dialogTextFieldController = TextEditingController();
 
   void addNewNote(String description) {
@@ -45,12 +45,6 @@ class _NotesListState extends State<NotesList> {
         padding: const EdgeInsets.all(16),
         itemCount: _notes.length,
         itemBuilder: (BuildContext context, int index) {
-          /*return Column(
-            children: [
-              _buildRow(_notes[index]),
-              const Divider(),
-            ],
-          );*/
           return _buildRow(_notes[index]);
         }
     );
