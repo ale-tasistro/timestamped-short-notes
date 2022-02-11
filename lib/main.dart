@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'Welcome to Flutter',
+      title: 'Timestamped note taking app',
       home: NotesList(),
     );
   }
@@ -30,8 +30,10 @@ class NotesList extends StatefulWidget {
 
 class _NotesListState extends State<NotesList> {
 
-  final _notes = <Note>[];
-  final TextEditingController _dialogTextFieldController = TextEditingController();
+  final _notes = <Note>[Note("prueba")];
+  final TextEditingController _newNoteDialogTextFieldController = TextEditingController();
+  final TextEditingController _editNoteDialogTextFieldController = TextEditingController();
+
 
   void addNewNote(String description) {
     Note note = Note(description);
@@ -52,22 +54,25 @@ class _NotesListState extends State<NotesList> {
 
   Widget _buildRow(Note nota) {
     return Card(
-        child: ListTile(
-          title: Text(nota.timestampHour()),
-          subtitle: Text(nota.desc),
-          trailing: Text(nota.timestampDate()),
-        ),
+      child: ListTile(
+        title: Text(nota.timestampHour()),
+        subtitle: Text(nota.desc),
+        trailing: Text(nota.timestampDate()),
+        onTap: () {
+          _showEditNoteDialog(nota);
+        },
+      ),
     );
   }
 
-  void _showDialog() {
+  void _showNewNoteDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("New note"),
           content: TextField(
-            controller: _dialogTextFieldController,
+            controller: _newNoteDialogTextFieldController,
             decoration: const InputDecoration(hintText: "Note description goes here"),
           ),
           actions: [
@@ -78,11 +83,43 @@ class _NotesListState extends State<NotesList> {
                 child: const Text("Close")),
             TextButton(
                 onPressed: () {
-                  addNewNote(_dialogTextFieldController.text);
-                  _dialogTextFieldController.text = "";
+                  addNewNote(_newNoteDialogTextFieldController.text);
+                  _newNoteDialogTextFieldController.text = "";
                   Navigator.pop(context);
                 },
                 child: const Text("Ok"),
+            ),
+          ],
+        );
+      }
+    );
+  }
+
+  void _showEditNoteDialog(Note note) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Edit note"),
+          content: TextField(
+            controller: _editNoteDialogTextFieldController,
+            decoration: InputDecoration(hintText: note.desc),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Close")),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  note.setDesc(_editNoteDialogTextFieldController.text);
+                });
+                _editNoteDialogTextFieldController.text = "";
+                Navigator.pop(context);
+              },
+              child: const Text("Ok"),
             ),
           ],
         );
@@ -94,12 +131,12 @@ class _NotesListState extends State<NotesList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notas'),
+        title: const Text('Notes'),
       ),
       body: _buildList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showDialog();
+          _showNewNoteDialog();
         } ,
         child: const Icon(Icons.add),
       ),
