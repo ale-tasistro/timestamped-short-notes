@@ -68,14 +68,14 @@ class _NotesListState extends State<NotesList> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Alert Dialog title"),
-          content: Text("Alert Dialog body"),
+          title: const Text("Alert Dialog title"),
+          content: const Text("Alert Dialog body"),
           actions: [
             TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text("Close"))
+                child: const Text("Close"))
           ],
         );
       }
