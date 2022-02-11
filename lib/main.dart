@@ -31,9 +31,10 @@ class NotesList extends StatefulWidget {
 class _NotesListState extends State<NotesList> {
 
   final _notes = <Note>[Note("nota 1"), Note("nota 2"), Note("nota 3"), Note("nota 4")];
-  final _biggerFont = const TextStyle(fontSize: 18);
+  final TextEditingController _dialogTextFieldController = TextEditingController();
 
-  void addNewNote(Note note) {
+  void addNewNote(String description) {
+    Note note = Note(description);
     setState(() {
       _notes.insert(0, note);
     });
@@ -44,18 +45,18 @@ class _NotesListState extends State<NotesList> {
         padding: const EdgeInsets.all(16),
         itemCount: _notes.length,
         itemBuilder: (BuildContext context, int index) {
-          return Column(
+          /*return Column(
             children: [
               _buildRow(_notes[index]),
               const Divider(),
             ],
-          );
+          );*/
+          return _buildRow(_notes[index]);
         }
     );
   }
 
   Widget _buildRow(Note nota) {
-
     return Card(
         child: ListTile(
           title: Text(nota.timestampHour()),
@@ -70,14 +71,25 @@ class _NotesListState extends State<NotesList> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Alert Dialog title"),
-          content: const Text("Alert Dialog body"),
+          title: const Text("New note"),
+          content: TextField(
+            controller: _dialogTextFieldController,
+            decoration: const InputDecoration(hintText: "Note description goes here"),
+          ),
           actions: [
             TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text("Close"))
+                child: const Text("Close")),
+            TextButton(
+                onPressed: () {
+                  addNewNote(_dialogTextFieldController.text);
+                  _dialogTextFieldController.text = "";
+                  Navigator.pop(context);
+                },
+                child: const Text("Ok"),
+            ),
           ],
         );
       }
