@@ -33,6 +33,12 @@ class _NotesListState extends State<NotesList> {
   final _notes = <Note>[Note("nota 1"), Note("nota 2"), Note("nota 3"), Note("nota 4")];
   final _biggerFont = const TextStyle(fontSize: 18);
 
+  void addNewNote(Note note) {
+    setState(() {
+      _notes.insert(0, note);
+    });
+  }
+
   Widget _buildList() {
     return ListView.builder(
         padding: const EdgeInsets.all(16),
@@ -51,9 +57,28 @@ class _NotesListState extends State<NotesList> {
   Widget _buildRow(Note nota) {
     return ListTile(
       title: Text(
-        nota.desc,
+        nota.timestampHour() + " - " + nota.timestampDate() + " - " + nota.desc,
         style: _biggerFont,
       ),
+    );
+  }
+
+  void _showDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Alert Dialog title"),
+          content: Text("Alert Dialog body"),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("Close"))
+          ],
+        );
+      }
     );
   }
 
@@ -64,6 +89,12 @@ class _NotesListState extends State<NotesList> {
         title: const Text('Notas'),
       ),
       body: _buildList(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _showDialog();
+        } ,
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
