@@ -55,11 +55,13 @@ class _NotesListState extends State<NotesList> {
   }
 
   Widget _buildRow(Note nota) {
-    return ListTile(
-      title: Text(
-        nota.timestampHour() + " - " + nota.timestampDate() + " - " + nota.desc,
-        style: _biggerFont,
-      ),
+
+    return Card(
+        child: ListTile(
+          title: Text(nota.timestampHour()),
+          subtitle: Text(nota.desc),
+          trailing: Text(nota.timestampDate()),
+        ),
     );
   }
 
