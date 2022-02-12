@@ -35,6 +35,9 @@ class _NotesListState extends State<NotesList> {
   final TextEditingController _newNoteDialogTextFieldController = TextEditingController();
   final TextEditingController _editNoteDialogTextFieldController = TextEditingController();
 
+  /*
+    Note adding and editing functions to pass as parameters to text field dialog function
+  */
 
   void _addNewNote(String description) {
     Note note = Note(description);
@@ -51,28 +54,9 @@ class _NotesListState extends State<NotesList> {
     };
   }
 
-  Widget _buildList() {
-    return ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: _notes.length,
-        itemBuilder: (BuildContext context, int index) {
-          return _buildRow(_notes[index]);
-        }
-    );
-  }
-
-  Widget _buildRow(Note nota) {
-    return Card(
-      child: ListTile(
-        title: Text(nota.timestampHour()),
-        subtitle: Text(nota.desc),
-        trailing: Text(nota.timestampDate()),
-        onTap: () {
-          _showEditNoteDialog(nota);
-        },
-      ),
-    );
-  }
+  /*
+    Dialog rendering functions
+  */
 
   Widget _textFieldDialog(TextEditingController controller,
       String title, String hint, void Function(String) okFunction) {
@@ -119,6 +103,37 @@ class _NotesListState extends State<NotesList> {
       }
     );
   }
+
+  /*
+    Note tile and list rendering functions
+  */
+
+  Widget _buildList() {
+    return ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: _notes.length,
+        itemBuilder: (BuildContext context, int index) {
+          return _buildRow(_notes[index]);
+        }
+    );
+  }
+
+  Widget _buildRow(Note nota) {
+    return Card(
+      child: ListTile(
+        title: Text(nota.timestampHour()),
+        subtitle: Text(nota.desc),
+        trailing: Text(nota.timestampDate()),
+        onTap: () {
+          _showEditNoteDialog(nota);
+        },
+      ),
+    );
+  }
+
+  /*
+    Main build function
+  */
 
   @override
   Widget build(BuildContext context) {
