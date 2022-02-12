@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
 class NotesList extends StatefulWidget {
   const NotesList({Key? key}) : super(key: key);
 
@@ -30,16 +31,24 @@ class NotesList extends StatefulWidget {
 
 class _NotesListState extends State<NotesList> {
 
-  final _notes = <Note>[Note("prueba")];
+  final _notes = <Note>[Note("test")];
   final TextEditingController _newNoteDialogTextFieldController = TextEditingController();
   final TextEditingController _editNoteDialogTextFieldController = TextEditingController();
 
 
-  void addNewNote(String description) {
+  void _addNewNote(String description) {
     Note note = Note(description);
     setState(() {
       _notes.insert(0, note);
     });
+  }
+
+  void Function(String) _editNote(Note note) {
+    return (desc) => {
+      setState(() {
+        note.setDesc(desc);
+      })
+    };
   }
 
   Widget _buildList() {
@@ -65,32 +74,38 @@ class _NotesListState extends State<NotesList> {
     );
   }
 
+  Widget _textFieldDialog(TextEditingController controller,
+      String title, String hint, void Function(String) okFunction) {
+    return AlertDialog(
+      title: Text(title),
+      content: TextField(
+        controller: controller,
+        decoration: InputDecoration(hintText: hint),
+      ),
+      actions: [
+        TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text("Close")),
+        TextButton(
+          onPressed: () {
+            okFunction(controller.text);
+            controller.text = "";
+            Navigator.pop(context);
+          },
+          child: const Text("Ok"),
+        ),
+      ],
+    );
+  }
+
   void _showNewNoteDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("New note"),
-          content: TextField(
-            controller: _newNoteDialogTextFieldController,
-            decoration: const InputDecoration(hintText: "Note description goes here"),
-          ),
-          actions: [
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text("Close")),
-            TextButton(
-                onPressed: () {
-                  addNewNote(_newNoteDialogTextFieldController.text);
-                  _newNoteDialogTextFieldController.text = "";
-                  Navigator.pop(context);
-                },
-                child: const Text("Ok"),
-            ),
-          ],
-        );
+        return _textFieldDialog(_newNoteDialogTextFieldController,
+            "New note", "Note description goes here", _addNewNote);
       }
     );
   }
@@ -99,30 +114,8 @@ class _NotesListState extends State<NotesList> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Edit note"),
-          content: TextField(
-            controller: _editNoteDialogTextFieldController,
-            decoration: InputDecoration(hintText: note.desc),
-          ),
-          actions: [
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text("Close")),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  note.setDesc(_editNoteDialogTextFieldController.text);
-                });
-                _editNoteDialogTextFieldController.text = "";
-                Navigator.pop(context);
-              },
-              child: const Text("Ok"),
-            ),
-          ],
-        );
+        return  _textFieldDialog(_editNoteDialogTextFieldController,
+            "Edit note", note.desc, _editNote(note));
       }
     );
   }
