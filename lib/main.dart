@@ -77,7 +77,7 @@ class _NotesListState extends State<NotesList> {
       context: context,
       builder: (BuildContext context) {
         return  _textFieldDialog(_editNoteDialogTextFieldController,
-            "Edit note", note.desc, _editNote(note));
+            "Edit note", note.getDesc(), _editNote(note));
       }
     );
   }
@@ -108,8 +108,8 @@ class _NotesListState extends State<NotesList> {
   }
 
   _showChangeDateDialog(Note note) {
-    List<int> date = [note.timestamp.year, note.timestamp.month, note.timestamp.day];
-    List<int> hour = [note.timestamp.hour, note.timestamp.minute];
+    List<int> date = [note.getTimestamp().year, note.getTimestamp().month, note.getTimestamp().day];
+    List<int> hour = [note.getTimestamp().hour, note.getTimestamp().minute];
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -142,7 +142,7 @@ class _NotesListState extends State<NotesList> {
                         suffixIcon: Icon(Icons.event_note),
                         labelText: 'Pick an hour',
                       ),
-                      initialDate: note.timestamp,
+                      initialDate: note.getTimestamp(),
                       mode: DateTimeFieldPickerMode.time,
                       onDateSelected: (DateTime hourValue) {
                         hour = [hourValue.hour, hourValue.minute];
@@ -220,13 +220,13 @@ class _NotesListState extends State<NotesList> {
     return Card(
       child: ListTile(
         title: Text(nota.timestampHour()),
-        subtitle: Text(nota.desc),
+        subtitle: Text(nota.getDesc()),
         trailing: TextButton(
           onPressed: () {
             _showChangeDateDialog(nota);
           },
           child: Text(nota.timestampDate()),
-        ), //Text(nota.timestampDate()),
+        ),
         onTap: () {
           _showEditNoteDialog(nota);
         },
