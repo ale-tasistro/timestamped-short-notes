@@ -1,7 +1,3 @@
-// Copyright 2018 The Flutter team. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 import 'package:flutter/material.dart';
 import 'note.dart';
 
@@ -87,26 +83,26 @@ class _NotesListState extends State<NotesList> {
 
   void _showRemoveNoteDialog(Note note) {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("Remove note"),
-            content: const Text("Are you sure you want to remove this note?"),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text("No")),
-              TextButton(
-                  onPressed: () {
-                    _removeNote(note);
-                    Navigator.pop(context);
-                  },
-                  child: const Text("Yes")),
-            ],
-          );
-        }
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Remove note"),
+          content: const Text("Are you sure you want to remove this note?"),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("No")),
+            TextButton(
+                onPressed: () {
+                  _removeNote(note);
+                  Navigator.pop(context);
+                },
+                child: const Text("Yes")),
+          ],
+        );
+      }
     );
   }
 
