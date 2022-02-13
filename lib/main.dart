@@ -36,25 +36,6 @@ class _NotesListState extends State<NotesList> {
   final TextEditingController _editNoteDialogTextFieldController = TextEditingController();
 
   /*
-    Note adding and editing functions to pass as parameters to text field dialog function
-  */
-
-  void _addNewNote(String description) {
-    Note note = Note(description);
-    setState(() {
-      _notes.insert(0, note);
-    });
-  }
-
-  void Function(String) _editNote(Note note) {
-    return (desc) => {
-      setState(() {
-        note.setDesc(desc);
-      })
-    };
-  }
-
-  /*
     Dialog rendering functions
   */
 
@@ -104,6 +85,56 @@ class _NotesListState extends State<NotesList> {
     );
   }
 
+  void _showRemoveNoteDialog(Note note) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Remove note"),
+            content: const Text("Are you sure you want to remove this note?"),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("No")),
+              TextButton(
+                  onPressed: () {
+                    _removeNote(note);
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Yes")),
+            ],
+          );
+        }
+    );
+  }
+
+  /*
+    Note adding and editing functions to pass as parameters to text field dialog function
+  */
+
+  void _addNewNote(String description) {
+    Note note = Note(description);
+    setState(() {
+      _notes.insert(0, note);
+    });
+  }
+
+  void Function(String) _editNote(Note note) {
+    return (desc) => {
+      setState(() {
+        note.setDesc(desc);
+      })
+    };
+  }
+
+  void _removeNote(Note note) {
+    setState(() {
+      _notes.remove(note);
+    });
+  }
+
   /*
     Note tile and list rendering functions
   */
@@ -126,6 +157,9 @@ class _NotesListState extends State<NotesList> {
         trailing: Text(nota.timestampDate()),
         onTap: () {
           _showEditNoteDialog(nota);
+        },
+        onLongPress: () {
+          _showRemoveNoteDialog(nota);
         },
       ),
     );
