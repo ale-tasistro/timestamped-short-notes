@@ -9,16 +9,20 @@ class Note {
   void setDesc(String newDesc) {
     desc = newDesc;
   }
+  
+  String _timesStringFormatter(int timeValue) {
+    return (timeValue < 10 ? "0" : "") + timeValue.toString();
+  }
 
   String timestampHour() {
-    return timestamp.hour.toString() + ":"
-        + timestamp.minute.toString();
+    return _timesStringFormatter(timestamp.hour) + ":"
+        + _timesStringFormatter(timestamp.minute);
   }
 
   String timestampDate() {
-    return timestamp.day.toString() + "/"
-        + timestamp.month.toString() + "/"
-        + timestamp.year.toString();
+    return _timesStringFormatter(timestamp.day) + "/"
+        + _timesStringFormatter(timestamp.month) + "/"
+        + _timesStringFormatter(timestamp.year);
   }
 
 }
