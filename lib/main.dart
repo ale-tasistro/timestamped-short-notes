@@ -124,7 +124,7 @@ class _NotesListState extends State<NotesList> {
                     child: DateTimeFormField(
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        suffixIcon: Icon(Icons.event_note),
+                        suffixIcon: Icon(Icons.date_range),
                         labelText: 'Pick a new date',
                       ),
                       initialDate: DateTime(date[0], date[1], date[2]),
@@ -139,7 +139,7 @@ class _NotesListState extends State<NotesList> {
                     child: DateTimeFormField(
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        suffixIcon: Icon(Icons.event_note),
+                        suffixIcon: Icon(Icons.schedule),
                         labelText: 'Pick an hour',
                       ),
                       initialDate: note.getTimestamp(),
