@@ -1,32 +1,53 @@
 
 class Note {
 
-  String desc;
-  DateTime timestamp = DateTime.now();
+  String _desc;
+  DateTime _timestamp = DateTime.now();
 
-  Note(this.desc);
+  Note(this._desc);
+
+  /*
+    Setters
+  */
 
   void setDesc(String newDesc) {
-    desc = newDesc;
+    _desc = newDesc;
   }
 
   void setTimestamp(DateTime dateTime) {
-    timestamp = dateTime;
+    _timestamp = dateTime;
   }
+
+  /*
+    Getters
+  */
+
+  String getDesc() {
+    return _desc;
+  }
+
+  DateTime getTimestamp() {
+    return _timestamp;
+  }
+
+  /*
+    Timestamp string formatters
+  */
+
 
   String _timesStringFormatter(int timeValue) {
     return (timeValue < 10 ? "0" : "") + timeValue.toString();
   }
 
   String timestampHour() {
-    return _timesStringFormatter(timestamp.hour) + ":"
-        + _timesStringFormatter(timestamp.minute);
+    return _timesStringFormatter(_timestamp.hour) + ":"
+        + _timesStringFormatter(_timestamp.minute);
   }
 
   String timestampDate() {
-    return _timesStringFormatter(timestamp.day) + "/"
-        + _timesStringFormatter(timestamp.month) + "/"
-        + _timesStringFormatter(timestamp.year);
+    return _timesStringFormatter(_timestamp.day) + "/"
+        + _timesStringFormatter(_timestamp.month) + "/"
+        + _timesStringFormatter(_timestamp.year);
   }
 
 }
