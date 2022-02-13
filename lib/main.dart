@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:date_field/date_field.dart';
 import 'note.dart';
 
 void main() {
@@ -106,6 +107,70 @@ class _NotesListState extends State<NotesList> {
     );
   }
 
+  _showChangeDateDialog(Note note) {
+    List<int> date = [note.timestamp.year, note.timestamp.month, note.timestamp.day];
+    List<int> hour = [note.timestamp.hour, note.timestamp.minute];
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Change note's date"),
+            content: Form(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Container(
+                    margin: const EdgeInsets.all(10.0),
+                    child: DateTimeFormField(
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        suffixIcon: Icon(Icons.event_note),
+                        labelText: 'Pick a new date',
+                      ),
+                      initialDate: DateTime(date[0], date[1], date[2]),
+                      mode: DateTimeFieldPickerMode.date,
+                      onDateSelected: (DateTime dateValue) {
+                        date = [dateValue.year, dateValue.month, dateValue.day];
+                      },
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.all(10.0),
+                    child: DateTimeFormField(
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        suffixIcon: Icon(Icons.event_note),
+                        labelText: 'Pick an hour',
+                      ),
+                      initialDate: note.timestamp,
+                      mode: DateTimeFieldPickerMode.time,
+                      onDateSelected: (DateTime hourValue) {
+                        hour = [hourValue.hour, hourValue.minute];
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Cancel")),
+              TextButton(
+                  onPressed: () {
+                    DateTime newTimestamp = DateTime(date[0], date[1], date[2], hour[0], hour[1]);
+                    _changeNoteTimestamp(note, newTimestamp);
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Ok")),
+            ],
+          );
+        }
+    );
+  }
+
   /*
     Note adding and editing functions to pass as parameters to text field dialog function
   */
@@ -130,6 +195,12 @@ class _NotesListState extends State<NotesList> {
       _notes.remove(note);
     });
   }
+  
+  void _changeNoteTimestamp(Note note, DateTime date) {
+    setState(() {
+      note.setTimestamp(date);
+    });
+  }
 
   /*
     Note tile and list rendering functions
@@ -150,7 +221,12 @@ class _NotesListState extends State<NotesList> {
       child: ListTile(
         title: Text(nota.timestampHour()),
         subtitle: Text(nota.desc),
-        trailing: Text(nota.timestampDate()),
+        trailing: TextButton(
+          onPressed: () {
+            _showChangeDateDialog(nota);
+          },
+          child: Text(nota.timestampDate()),
+        ), //Text(nota.timestampDate()),
         onTap: () {
           _showEditNoteDialog(nota);
         },
