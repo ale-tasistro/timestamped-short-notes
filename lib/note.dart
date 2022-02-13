@@ -9,7 +9,11 @@ class Note {
   void setDesc(String newDesc) {
     desc = newDesc;
   }
-  
+
+  void setTimestamp(DateTime dateTime) {
+    timestamp = dateTime;
+  }
+
   String _timesStringFormatter(int timeValue) {
     return (timeValue < 10 ? "0" : "") + timeValue.toString();
   }
