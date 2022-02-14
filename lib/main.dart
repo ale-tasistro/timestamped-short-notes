@@ -172,13 +172,13 @@ class _NotesListState extends State<NotesList> {
   }
 
   /*
-    Note adding and editing functions to pass as parameters to text field dialog function
+    Note manipulation functions
   */
 
   void _addNewNote(String description) {
     Note note = Note(description);
     setState(() {
-      _notes.insert(0, note);
+      _sortedInsert(note);
     });
   }
 
@@ -194,12 +194,41 @@ class _NotesListState extends State<NotesList> {
     setState(() {
       _notes.remove(note);
     });
+    _updateNoteListOrder();
   }
   
   void _changeNoteTimestamp(Note note, DateTime date) {
     setState(() {
       note.setTimestamp(date);
     });
+    _updateNoteListOrder();
+  }
+
+  /*
+    Note List manipulation functions
+  */
+
+  void _updateNoteListOrder() {
+    setState(() {
+      _notes.sort((a, b) => b.compareTimestampTo(a));
+    });
+  }
+
+  void _sortedInsert(Note note) {
+    int i = 0;
+    bool foundPlace = false;
+    while(i < _notes.length && !foundPlace) {
+      if (_notes[i].compareTimestampTo(note) > 0) {
+        // the note in place i of the list has a later timestamp
+        // than the one being inserted
+        i++;
+      } else {
+        // the note in place i of the list has either the same or
+        // an earlier timestamp than the one being inserted
+        foundPlace = true;
+      }
+    }
+    _notes.insert(i, note);
   }
 
   /*
