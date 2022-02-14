@@ -11,6 +11,14 @@ class Note {
   Note(this.desc);
 
   /*
+    Comparing
+  */
+
+  int compareTimestampTo(Note other) {
+      return timestamp.compareTo(other.timestamp);
+  }
+
+  /*
     Setters
   */
 
