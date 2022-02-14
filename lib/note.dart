@@ -1,21 +1,25 @@
+import 'package:json_annotation/json_annotation.dart';
 
+part 'note.g.dart';
+
+@JsonSerializable()
 class Note {
 
-  String _desc;
-  DateTime _timestamp = DateTime.now();
+  String desc;
+  DateTime timestamp = DateTime.now();
 
-  Note(this._desc);
+  Note(this.desc);
 
   /*
     Setters
   */
 
   void setDesc(String newDesc) {
-    _desc = newDesc;
+    desc = newDesc;
   }
 
   void setTimestamp(DateTime dateTime) {
-    _timestamp = dateTime;
+    timestamp = dateTime;
   }
 
   /*
@@ -23,11 +27,11 @@ class Note {
   */
 
   String getDesc() {
-    return _desc;
+    return desc;
   }
 
   DateTime getTimestamp() {
-    return _timestamp;
+    return timestamp;
   }
 
   /*
@@ -40,14 +44,28 @@ class Note {
   }
 
   String timestampHour() {
-    return _timesStringFormatter(_timestamp.hour) + ":"
-        + _timesStringFormatter(_timestamp.minute);
+    return _timesStringFormatter(timestamp.hour) + ":"
+        + _timesStringFormatter(timestamp.minute);
   }
 
   String timestampDate() {
-    return _timesStringFormatter(_timestamp.day) + "/"
-        + _timesStringFormatter(_timestamp.month) + "/"
-        + _timesStringFormatter(_timestamp.year);
+    return _timesStringFormatter(timestamp.day) + "/"
+        + _timesStringFormatter(timestamp.month) + "/"
+        + _timesStringFormatter(timestamp.year);
   }
+
+  /*
+    JSON functions
+  */
+
+  /// A necessary factory constructor for creating a new Note instance
+  /// from a map. Pass the map to the generated `_$NoteFromJson()` constructor.
+  /// The constructor is named after the source class, in this case, Note.
+  factory Note.fromJson(Map<String, dynamic> json) => _$NoteFromJson(json);
+
+  /// `toJson` is the convention for a class to declare support for serialization
+  /// to JSON. The implementation simply calls the private, generated
+  /// helper method `_$NoteToJson`.
+  Map<String, dynamic> toJson() => _$NoteToJson(this);
 
 }
