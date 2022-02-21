@@ -1,6 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart';
+import 'note.dart';
 import 'package:flutter/material.dart';
 import 'package:date_field/date_field.dart';
-import 'note.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,7 +32,7 @@ class NotesList extends StatefulWidget {
 
 class _NotesListState extends State<NotesList> {
 
-  final _notes = <Note>[Note("test")];
+  List<Note> _notes = [Note("test")];
   final TextEditingController _newNoteDialogTextFieldController = TextEditingController();
   final TextEditingController _editNoteDialogTextFieldController = TextEditingController();
 
@@ -180,13 +184,15 @@ class _NotesListState extends State<NotesList> {
     setState(() {
       _sortedInsert(note);
     });
+    _saveItems();
   }
 
   void Function(String) _editNote(Note note) {
     return (desc) => {
       setState(() {
         note.setDesc(desc);
-      })
+      }),
+      _saveItems()
     };
   }
 
@@ -195,6 +201,7 @@ class _NotesListState extends State<NotesList> {
       _notes.remove(note);
     });
     _updateNoteListOrder();
+    _saveItems();
   }
   
   void _changeNoteTimestamp(Note note, DateTime date) {
@@ -202,6 +209,7 @@ class _NotesListState extends State<NotesList> {
       note.setTimestamp(date);
     });
     _updateNoteListOrder();
+    _saveItems();
   }
 
   /*
@@ -264,6 +272,61 @@ class _NotesListState extends State<NotesList> {
         },
       ),
     );
+  }
+
+  /*
+    Local storage functions
+  */
+
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+    print(directory.path);
+    return directory.path;
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/data.json');
+  }
+
+  Future<String> _readContent() async {
+    try {
+      final file = await _localFile;
+      String contents = await file.readAsString();
+      return contents;
+    } catch (e) {
+      throw 'Error!';
+    }
+  }
+
+  // Fetch content from the json file
+  Future<void> _readJson() async {
+    final String response = await _readContent();
+    if (response.isNotEmpty) {
+      final data = await json.decode(response);
+      var jsonList = List<Map<String,dynamic>>.from(data["notes"]);
+      setState(() {
+        _notes = List<Note>.from(jsonList.map((e) => Note.fromJson(e)));
+      });
+    }
+  }
+
+  Future<File> _saveContent(String content) async {
+    final file = await _localFile;
+    // delete file before writing to avoid duplicating data?
+    return file.writeAsString(content);
+  }
+
+  Future<File> _saveItems() {
+    String encoded = json.encode({'notes':_notes});
+    print(encoded);
+    return _saveContent(encoded);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _readJson();
   }
 
   /*
