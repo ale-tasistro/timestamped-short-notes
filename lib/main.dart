@@ -32,7 +32,7 @@ class NotesList extends StatefulWidget {
 
 class _NotesListState extends State<NotesList> {
 
-  List<Note> _notes = [Note("test")];
+  List<Note> _notes = [];
   final TextEditingController _newNoteDialogTextFieldController = TextEditingController();
   final TextEditingController _editNoteDialogTextFieldController = TextEditingController();
 
@@ -337,7 +337,7 @@ class _NotesListState extends State<NotesList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notes'),
+        title: const Text('TimeStamped Short Notes'),
       ),
       body: _buildList(),
       floatingActionButton: FloatingActionButton(
