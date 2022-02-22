@@ -22,25 +22,17 @@ class Note {
     Setters
   */
 
-  void setDesc(String newDesc) {
-    desc = newDesc;
-  }
+  set setDesc(String aDesc) => desc = aDesc;
 
-  void setTimestamp(DateTime dateTime) {
-    timestamp = dateTime;
-  }
+  set setTimestamp(DateTime aDateTime) => timestamp = aDateTime;
 
   /*
     Getters
   */
 
-  String getDesc() {
-    return desc;
-  }
+  String get getDesc => desc;
 
-  DateTime getTimestamp() {
-    return timestamp;
-  }
+  DateTime get getTimestamp => timestamp;
 
   /*
     Timestamp string formatters
