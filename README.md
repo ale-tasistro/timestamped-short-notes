@@ -14,5 +14,6 @@ Pressing the (+) button in the bottom-right corner opens a dialog with a textfie
 
 #### Removing a note:
 Pressing and holding an existing note opens a dialog to remove it.
+
 --- 
 Enjoy!
