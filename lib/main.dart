@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter/services.dart';
 import 'note.dart';
 import 'package:flutter/material.dart';
 import 'package:date_field/date_field.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'Timestamped note taking app',
+      title: 'YANTA',
       home: NotesList(),
     );
   }
@@ -35,6 +37,23 @@ class _NotesListState extends State<NotesList> {
   List<Note> _notes = [];
   final TextEditingController _newNoteDialogTextFieldController = TextEditingController();
   final TextEditingController _editNoteDialogTextFieldController = TextEditingController();
+
+  /*
+    AppBar rendering functions
+  */
+
+  AppBar _appBar() {
+    return AppBar(
+      title: const Text('YANTA'),
+      actions: <Widget>[
+        IconButton(
+          icon: const Icon(Icons.print),
+          tooltip: 'Export Notes to PDF',
+          onPressed: () => _toPdf(_notes),
+        )],
+    );
+  }
+
 
   /*
     Dialog rendering functions
@@ -280,18 +299,17 @@ class _NotesListState extends State<NotesList> {
 
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
-    print(directory.path);
     return directory.path;
   }
 
-  Future<File> get _localFile async {
+  Future<File> get _localDataFile async {
     final path = await _localPath;
     return File('$path/data.json');
   }
 
   Future<String> _readContent() async {
     try {
-      final file = await _localFile;
+      final file = await _localDataFile;
       String contents = await file.readAsString();
       return contents;
     } catch (e) {
@@ -312,14 +330,13 @@ class _NotesListState extends State<NotesList> {
   }
 
   Future<File> _saveContent(String content) async {
-    final file = await _localFile;
+    final file = await _localDataFile;
     // delete file before writing to avoid duplicating data?
     return file.writeAsString(content);
   }
 
   Future<File> _saveItems() {
     String encoded = json.encode({'notes':_notes});
-    print(encoded);
     return _saveContent(encoded);
   }
 
@@ -330,15 +347,75 @@ class _NotesListState extends State<NotesList> {
   }
 
   /*
+    Exporting functions
+  */
+
+  List<Map<String, dynamic>> _noteListGroupByDate(List<Note> list) {
+    List<Map<String, dynamic>> dateLists = [];
+    if (list.isNotEmpty) {
+      int fin = list.length;
+      int index = 0;
+      Note currentNote = list.elementAt(index);
+      String lastDate = currentNote.timestampDate();
+      List<Note> noteList = [];
+      while (index < fin) {
+        currentNote = list.elementAt(index);
+        String currentDate = currentNote.timestampDate();
+        if (lastDate == currentDate) {
+          noteList.add(currentNote);
+        } else {
+          Map<String, dynamic> newDateList = {'date':lastDate, 'list':noteList};
+          dateLists.add(newDateList);
+          lastDate = currentDate;
+          noteList = [currentNote];
+        }
+        index++;
+      }
+      Map<String, dynamic> newDateList = {'date':lastDate, 'list':noteList};
+      dateLists.add(newDateList);
+    }
+    return dateLists;
+  }
+
+  String _formatGroupedNoteList(List<Map<String, dynamic>> list) {
+    const divBar =
+        "-------------------------------------------------------------------------------------------------------";
+    String content = "";
+    for(int i = 0; i < list.length; i++) {
+      Map<String, dynamic> current = list.elementAt(i);
+      content += current['date'] + '\n';
+      List<Note> currentList = List<Note>.from(current['list']);
+      for(int j = currentList.length-1; j >= 0; j--) {
+        Note currentNote = currentList.elementAt(j);
+        content += currentNote.timestampHour() + " - " + currentNote.getDesc + '\n';
+      }
+      content += divBar + '\n';
+    }
+    return content;
+  }
+
+  _toPdf(List<Note> list) async {
+    final pdf = pw.Document();
+
+    pdf.addPage(pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) {
+          return pw.Text(_formatGroupedNoteList(_noteListGroupByDate(list)), style: const pw.TextStyle(fontSize: 14));// Center
+        })
+    ); // Page
+    await Printing.layoutPdf(
+        onLayout: (PdfPageFormat format) async => pdf.save());
+  }
+
+
+  /*
     Main build function
   */
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('TimeStamped Short Notes'),
-      ),
+      appBar: _appBar(),
       body: _buildList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
