@@ -10,6 +10,10 @@ class Note {
 
   Note(this.desc);
 
+  String toString() {
+    return timestampDate() + ", " + timestampHour() + " - " + desc;
+  }
+
   /*
     Comparing
   */
