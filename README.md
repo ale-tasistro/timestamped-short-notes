@@ -17,5 +17,8 @@ Pressing the (+) button in the bottom-right corner opens a dialog with a textfie
 #### Removing a note:
 Pressing and holding an existing note opens a dialog to remove it.
 
+#### Exporting notes to pdf:
+Pressing on the printer-icon button formats the notes by date into a document which can be printed or exported as pdf.
+
 --- 
 Enjoy!
