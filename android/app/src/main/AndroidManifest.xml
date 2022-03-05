@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.notas">
    <application
-        android:label="TimeStamped Short Notes"
+        android:label="YANTA"
         android:name="${applicationName}"
         android:icon="@drawable/icon">
         <activity
